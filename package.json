@@ -1,11 +1,11 @@
 {
   "name": "database-migrations",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "knex based migrations",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepublish": "npm run build",
+    "prepublish": "npm run lint && npm run build",
     "build": "rm -rf ./dist && tsc -p tsconfig.json",
     "lint": "eslint --ext .ts ./src --fix",
     "test": "exit 0"

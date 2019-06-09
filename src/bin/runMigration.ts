@@ -6,8 +6,6 @@ async function runMigration() {
 
   const configFilePath = path.join(process.cwd(), KNEX_CONFIG);
 
-  console.log(configFilePath);
-
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const config: CustomKnexConfig = require(configFilePath);
 
