@@ -1,0 +1,33 @@
+{
+  "name": "database-migrations",
+  "version": "1.0.0",
+  "description": "knex based migrations",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "rm -rf ./dist && tsc -p tsconfig.json",
+    "lint": "eslint --ext .ts ./src --fix",
+    "test": "exit 0"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "12.0.7",
+    "knex": "0.17.5",
+    "typescript": "3.5.1",
+    "@typescript-eslint/eslint-plugin": "1.9.0",
+    "@typescript-eslint/parser": "1.9.0",
+    "eslint": "5.16.0",
+    "eslint-config-prettier": "4.3.0",
+    "eslint-plugin-prettier": "3.1.0",
+    "prettier": "1.18.2"
+  },
+  "bin": {
+    "migration:generate": "./dist/bin/migrationGenerator.js",
+    "migration:run": "./dist/bin/runMigration.js"
+  },
+  "files": [
+    "/dist",
+    "README.md"
+  ]
+}
