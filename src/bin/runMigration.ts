@@ -1,12 +1,15 @@
+import * as path from 'path';
 import { CustomKnexConfig, Migrator } from '../migrator';
 
 async function runMigration() {
   const KNEX_CONFIG = process.argv[2];
 
-  const configFile = KNEX_CONFIG;
+  const configFilePath = path.join(process.cwd(), KNEX_CONFIG);
+
+  console.log(configFilePath);
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const config: CustomKnexConfig = require(configFile);
+  const config: CustomKnexConfig = require(configFilePath);
 
   const migrator = new Migrator(config);
 

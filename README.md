@@ -11,10 +11,11 @@ Database migrations based on [knex.js](http://knexjs.org)
 # Usage
 Run migrations
 ```
-  - node -r ts-node/register runMigration knexfile.ts
-  - runMigration knexfile.js
+  - node -r ts-node/register ./node_modules/.bin/migration:run knexfile.ts
+  - migration:run knexfile.js
 ```
 Generate migrations
 ```
-  - 
+  - migration:generate <folder> <migration-name>
+  - migration:generate migrations/migrations/v0.2.0
 ```
