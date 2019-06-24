@@ -7,12 +7,27 @@ const UP_FILE_REGEX = /\.01_up\.sql/;
 const DOWN_FILE_REGEX = /\.02_down\.sql/;
 const BASENAME_FILE_REGEX = /^[\w_]+/;
 
+interface MigrationFile {
+  jsMigrationFileName: string;
+  upScriptName?: string;
+  downScriptName?: string;
+}
+
 function isString(value: unknown): value is string {
   return typeof value === 'string' || value instanceof String;
 }
 
 function isArray<T>(value: T[] | unknown): value is T[] {
   return typeof value === 'object' && value != null && value.constructor === Array;
+}
+
+function fileExists(path: string): boolean {
+  try {
+    const jsFileStat = fs.statSync(path);
+    return jsFileStat.isFile();
+  } catch (err) {
+    return false;
+  }
 }
 
 function isUPFile(filename: string) {
@@ -65,12 +80,7 @@ export function createJsScriptFile(migrationFileName: string, upFile: string, do
 export function createTempJsFiles(migrationDirectory?: string | string[]): string[] {
   const jsFiles: string[] = [];
 
-  const sqlFileDict: {
-    [fileName: string]: {
-      up?: string;
-      down?: string;
-    };
-  } = {};
+  const sqlFiles: MigrationFile[] = [];
 
   const directories = isString(migrationDirectory) ? [migrationDirectory] : isArray(migrationDirectory) ? migrationDirectory : undefined;
 
@@ -87,23 +97,30 @@ export function createTempJsFiles(migrationDirectory?: string | string[]): strin
         const baseNameMatch = file.match(BASENAME_FILE_REGEX);
         if (baseNameMatch) {
           const baseName = baseNameMatch[0];
-          const pathFile = `${path.join(directory, baseName)}.js`;
+          const jsMigrationFilePath = `${path.join(directory, baseName)}.js`;
           const scriptFileName = `./${file}`;
-          if (isUPFile(file)) {
-            sqlFileDict[pathFile] = sqlFileDict[pathFile] != null ? { ...sqlFileDict[pathFile], up: scriptFileName } : { up: scriptFileName };
-          }
-          if (isDOWNFile(file)) {
-            sqlFileDict[pathFile] = sqlFileDict[pathFile] != null ? { ...sqlFileDict[pathFile], down: scriptFileName } : { down: scriptFileName };
+
+          if (!fileExists(jsMigrationFilePath)) {
+            const sqlFileObj: MigrationFile = {
+              jsMigrationFileName: jsMigrationFilePath,
+            };
+            if (isUPFile(file)) {
+              sqlFileObj.upScriptName = scriptFileName;
+            }
+            if (isDOWNFile(file)) {
+              sqlFileObj.downScriptName = scriptFileName;
+            }
+            sqlFiles.push(sqlFileObj);
           }
         }
       }
     }
   }
 
-  for (const [fileName, { up, down }] of Object.entries(sqlFileDict)) {
-    if (up) {
-      createJsScriptFile(fileName, up, down);
-      jsFiles.push(fileName);
+  for (const { jsMigrationFileName, downScriptName, upScriptName } of sqlFiles) {
+    if (upScriptName) {
+      createJsScriptFile(jsMigrationFileName, upScriptName, downScriptName);
+      jsFiles.push(jsMigrationFileName);
     }
   }
 
