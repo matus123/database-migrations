@@ -5,7 +5,7 @@ const SQL_EXTNAME = '.sql';
 
 const UP_FILE_REGEX = /\.01_up\.sql/;
 const DOWN_FILE_REGEX = /\.02_down\.sql/;
-const BASENAME_FILE_REGEX = /^[\w_]+/;
+const BASENAME_FILE_REGEX = /^[\w_-]+/;
 
 interface MigrationFile {
   jsMigrationFileName: string;
