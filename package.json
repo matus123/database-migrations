@@ -8,19 +8,24 @@
     "prepublish": "npm run lint && npm run build",
     "build": "rm -rf ./dist && tsc -p tsconfig.json",
     "lint": "eslint --ext .ts ./src --fix",
-    "test": "exit 0"
+    "test": "jest --runInBand -c test/jest.config.js"
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "12.0.7",
-    "knex": "0.17.5",
-    "typescript": "3.5.1",
-    "@typescript-eslint/eslint-plugin": "1.9.0",
-    "@typescript-eslint/parser": "1.9.0",
+    "@types/jest": "24.0.15",
+    "@types/node": "12.6.8",
+    "knex": "0.19.0",
+    "typescript": "3.5.3",
+    "@typescript-eslint/eslint-plugin": "1.12.0",
+    "@typescript-eslint/parser": "1.12.0",
     "eslint": "5.16.0",
     "eslint-config-prettier": "4.3.0",
     "eslint-plugin-prettier": "3.1.0",
-    "prettier": "1.18.2"
+    "prettier": "1.18.2",
+    "pg": "^7.11.0",
+    "jest": "24.8.0",
+    "ts-jest": "24.0.2",
+    "ts-node": "^8.3.0"
   },
   "bin": {
     "migration:generate": "./dist/bin/migrationGenerator.js",

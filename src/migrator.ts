@@ -6,35 +6,53 @@ import { cleanSqlJsFiles, createTempJsFiles } from './utils';
 
 export interface CustomKnexConfig extends Knex.MigratorConfig, Knex.Config {
   repeatableDirectory?: string;
+  dryRun?: boolean;
 }
 
 export class Migrator {
   private knex: Knex;
   private jsFiles: string[] = [];
+  private isDryRun: boolean;
   public constructor(private config: CustomKnexConfig) {
     this.knex = Knex(config);
+    this.isDryRun = config.dryRun || false;
   }
 
   public async runMigrations() {
+    let repeatebleScripts: string[] = [];
+    let latestMigrations: [number, string[]] = [0, []];
     try {
-      await this.runLatestMigrations();
-      await this.runRepeatableMigrations();
+      await this.prepareMigrationScripts();
+
+      if (!this.isDryRun) {
+        latestMigrations = await this.runLatestMigrations();
+        repeatebleScripts = await this.runRepeatableMigrations();
+      }
+      return {
+        repeatebleScripts,
+        latestMigrations,
+      };
     } finally {
       await this.cleanup();
     }
   }
 
-  private async runLatestMigrations() {
+  private async prepareMigrationScripts() {
     const migrationDirectories = this.config && this.config.migrations && this.config.migrations.directory;
 
     this.jsFiles = createTempJsFiles(migrationDirectories);
+  }
 
-    const logs = await this.knex.migrate.latest(this.config);
+  private async runLatestMigrations() {
+    const logs: [number, string[]] = await this.knex.migrate.latest(this.config);
 
     console.log(logs);
+
+    return logs;
   }
 
   private async runRepeatableMigrations() {
+    const processedRepeatableScripts: string[] = [];
     const repeatableDirectory = this.config.repeatableDirectory;
 
     if (repeatableDirectory) {
@@ -51,10 +69,13 @@ export class Migrator {
             await trx.raw(fileContent.toString());
 
             console.log(`${filePath}: completed`);
+            processedRepeatableScripts.push(filePath);
           }
         }
       });
     }
+
+    return processedRepeatableScripts;
   }
 
   private async cleanup() {
