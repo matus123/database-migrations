@@ -60,7 +60,7 @@ export class Migrator {
 
       const sortedFiles = files.sort();
 
-      await this.knex.transaction(async trx => {
+      await this.knex.transaction(async (trx) => {
         for (const file of sortedFiles) {
           const filePath = path.join(repeatableDirectory, file);
           const fileStat = fs.statSync(filePath);

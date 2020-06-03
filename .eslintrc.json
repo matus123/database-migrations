@@ -13,10 +13,7 @@
       "allowExpressions": true,
       "allowTypedFunctionExpressions": true
     }],
-    "@typescript-eslint/array-type": ["error", "array-simple"],
     "@typescript-eslint/no-parameter-properties": "off",
-    "@typescript-eslint/no-object-literal-type-assertion": ["error", {
-      "allowAsParameter": true
-    }]
+    "@typescript-eslint/explicit-module-boundary-types": "off"
   }
 }

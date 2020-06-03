@@ -21,7 +21,7 @@ runMigration()
     console.log('Finished');
   })
   // tslint:disable-next-line:no-console
-  .catch(err => {
+  .catch((err) => {
     console.log(err);
     process.exit(1);
   });

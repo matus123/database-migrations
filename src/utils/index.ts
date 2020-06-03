@@ -89,7 +89,7 @@ export function createJsScriptFile(migrationFileName: string, upFile: string, do
   fs.writeFileSync(migrationFileName, migrationContent);
 }
 
-export function createTempJsFiles(migrationDirectory?: string | string[]): string[] {
+export function createTempJsFiles(migrationDirectory?: string | string[] | readonly string[]): string[] {
   const jsFiles: string[] = [];
 
   const workingSqlFiles = new Map<string, WorkingMigrationFile>();

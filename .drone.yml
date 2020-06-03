@@ -1,0 +1,32 @@
+kind: pipeline
+type: docker
+name: default
+
+services:
+  - name: postgres
+    image: postgis/postgis:12-3.0-alpine
+    environment:
+      POSTGRES_USER: dbuser
+      POSTGRES_DB: dbtest
+      POSTGRES_PASSWORD: dbpassword
+
+steps:
+- name: Install packages
+  image: node:12.9.1
+  commands:
+    - yarn install --pure-lockfile --ignore-optional
+
+- name: Static Analysis
+  image: node:12.9.1
+  commands:
+    - yarn run lint
+  depends_on:
+    - Install packages
+
+- name: Build Application
+  image: node:12.9.1
+  commands:
+    - yarn run build
+  depends_on:
+    - Install packages
+    - Static Analysis
